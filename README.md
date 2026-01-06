@@ -22,10 +22,13 @@ Main Dialog와 Sub Dialog 간의 데이터 교환, 사용자 정의 메시지 �
     * 사용자 입력에 따른 `double` 배열 동적 할당 (`new`/`delete`).
     * 난수 생성 및 기초 통계 연산 (평균, 표준편차, 최소/최대값) 알고리즘 구현.
 
-## 🐛 Bug Fixes (v1.0.1)
-* **Critical Memory Issue Resolved:**
-    * `SubDlg::OnBnClickedGenRandBtn`에서 난수 생성 개수 변경 시, 이전 배열 크기(`m_array_count`)를 기준으로 메모리를 재할당하던 버그 수정.
-    * 사용자가 입력한 새로운 크기(`array_count`)로 올바르게 힙 메모리를 할당하도록 수정하여 잠재적인 **Heap Corruption** 방지.
+## 🔖 버전 / 변경 사항
+
+### v1.0.2
+* **Fix:** 난수 생성 개수 변경 시 `m_array_count`가 사용자 입력(`array_count`)과 항상 동기화되도록 보완
+* **Fix:** Modeless 대화상자(`SubDlg`) 실행 중 Modal 대화상자 버튼을 눌러도 중복 생성되지 않도록 예외 처리 추가
+
+> 자세한 원인/재현/수정 과정: [`docs/PATCH_NOTE_v1.0.2.md`](docs/PATCH_NOTE_v1.0.2.md)
 
 ## 🚀 Usage
 1.  **Main Dialog:** 각종 컨트롤(Radio, Check)을 조작하면 리스트에 로그가 남습니다.
