@@ -1,4 +1,17 @@
 # Changelog
+
+## [1.0.4] - 2026-01-07
+### Added
+- **Refactor:** `v1.0.3` AVG 기능 및 구조를 나머지 통계값 함수에도 적용 (예. `GetStandardDeviation`, `GetMinMax`)
+### Fixed
+- **Critical:** 난수 생성 개수 입력 시 음수를 입력하면 거대한 양수로 오인식되는(Underflow) 문제를 `GetDlgItemInt(..., &bTrans, FALSE)`를 사용하여 해결.
+
+## [1.0.3] - 2026-01-07
+### Changed
+- **Statistics:** 표준편차(StdDev), 최소/최대(Min/Max) 계산 및 출력 기능을 해당 버튼 이벤트 핸들러에서만 처리하도록 변경
+- **Refactor:** 평균 통계 연산 함수(`GetAverage`)에 포인터 연산(Displacement Addressing) 적용.
+- 난수 생성 범위를 `-100.0 ~ 100.0`으로 확장.
+
 ## [1.0.2] - 2026-01-06
 ### Fixed
 - **Critical:** `SubDlg`에서 동적 배열 재할당 시 멤버 변수(`m_array_count`)가 갱신되지 않던 로직 오류 수정.
