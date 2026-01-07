@@ -66,3 +66,70 @@ void CSots01Dlg::LoadDialogState()
     // Note: Radio Button 상태 복원 로직은 데이터 저장 기능 구현 후 추가 예정
 }
 ```
+
+---
+
+## 🔘 RadioButton 상태 저장/복원
+
+### 저장(UI → DIS)
+- `GetCheckedRadioButton(IDC_ENABLE_RADIO, IDC_HIDE_RADIO)`로 선택된 라디오 컨트롤 ID를 얻습니다.
+- 컨트롤 ID를 `Radio::Enable/Disable/Hide`로 매핑하여 `m_dlg_state.radio_state`에 저장합니다.
+
+```cpp
+UINT checked_id = GetCheckedRadioButton(IDC_ENABLE_RADIO, IDC_HIDE_RADIO);
+if (checked_id == 0) {
+    m_dlg_state.radio_state = Radio::Enable; // 기본값
+} else {
+    m_dlg_state.radio_state = RadioFromCtrlId(checked_id);
+}
+```
+
+### 복원(DIS → UI)
+- `radio_state`를 컨트롤 ID로 변환한 뒤 `CheckRadioButton`으로 체크를 반영합니다.
+
+```cpp
+const UINT id = CtrlIdFromRadio(p_dis->radio_state);
+CheckRadioButton(IDC_ENABLE_RADIO, IDC_HIDE_RADIO, id);
+```
+
+> 라디오 선택에 따라 다른 컨트롤 Enable/Hide 같은 부수효과가 있다면, 복원 직후 관련 함수(예: `OnSetCheck(id)`)를 함께 호출하여 UI 정책을 동기화합니다.
+
+## 🧩 추가 구현 사항 (Noteworthy)
+
+### 콤보 입력 텍스트 기반 아이템 생성
+- Save 버튼 클릭 시 `CComboBox::GetWindowText()`로 입력창 텍스트를 가져옵니다.
+- `FindStringExact()` 결과가 `CB_ERR`이면 목록에 없는 문자열이므로 `AddString()`으로 **새 아이템을 추가**합니다.
+- 새 아이템에는 `new DIS`로 상태 구조체를 할당한 뒤 `SetItemDataPtr()`로 연결합니다.
+- 기존 아이템이라도 `GetItemDataPtr()`가 `nullptr`이면 `DIS*`를 새로 할당해 연결합니다.
+
+---
+
+## 💾 메모리 관리 (Memory Management)
+
+`CComboBox`는 항목(String)만 관리할 뿐, `SetItemDataPtr`로 연결된 외부 메모리(`DIS*`)의 생명 주기는 관리하지 않습니다. 따라서 개발자가 직접 해제해야 합니다.
+
+#### 🚩 누수 방지 전략 (Anti-Leak Strategy)
+* **개별 삭제:** `DeleteString` 호출 직전에 `GetItemDataPtr`로 포인터를 가져와 `delete` 수행.
+* **일괄 삭제:** 대화 상자 종료(`OnDestroy`) 또는 초기화(`ResetContent`) 시, 모든 항목을 순회하며 메모리 해제.
+
+#### `ClearComboData` 구현
+모든 항목의 메모리를 안전하게 해제하는 헬퍼 함수입니다.
+
+```cpp
+void CSots01Dlg::ClearComboData()
+{
+    CComboBox* p_combo = (CComboBox*)GetDlgItem(IDC_COMBO1);
+    const int count = p_combo->GetCount();
+
+    for (int i = 0; i < count; i++) {
+        // void* -> DIS* 캐스팅 후 메모리 해제
+        DIS* p_data = reinterpret_cast<DIS*>(p_combo->GetItemDataPtr(i));
+        
+        // 유효성 검사 (nullptr 및 초기화되지 않은 값 -1 체크)
+        if (p_data && p_data != (DIS*)-1) {
+            delete p_data;
+        }
+    }
+    p_combo->ResetContent(); // UI 리스트 초기화
+}
+```

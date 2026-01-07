@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.5] - 2026-01-07
+### Added
+- `CComboBox` 아이템에 구조체 포인터(`DIS*`)를 연결하여 상태를 저장/관리하는 기능 추가.
+- CheckBox 상태(`check_states`) 저장/복원 로직 추가.
+- RadioButton 상태(`radio_state`) 저장/복원 로직 추가.
+- `SetItemDataPtr` 활용 및 이에 따른 메모리 해제(`delete`) 로직 구현.
+### Fixed
+- **Critical:** 프로그램 종료 시 `CComboBox` Item Data에 할당된 메모리가 해제되지 않아 발생하던 `Detected memory leaks!` 현상 수정.
+- `OnDestroy` 핸들러에 `ClearComboData()` 호출 추가.
+
 ## [1.0.4] - 2026-01-07
 ### Added
 - **Refactor:** `v1.0.3` AVG 기능 및 구조를 나머지 통계값 함수에도 적용 (예. `GetStandardDeviation`, `GetMinMax`)
