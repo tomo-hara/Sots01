@@ -19,6 +19,7 @@
 1.  **캡처:** `SetDialogState()` 함수를 통해 현재 UI 컨트롤의 상태를 `m_dlg_state` 멤버 변수에 기록합니다.
 2.  **할당:** `new` 연산자를 통해 힙(Heap) 메모리에 `DIS` 객체를 생성하고 데이터를 복사합니다.
 3.  **보관:** `CComboBox::SetItemDataPtr`를 사용하여 콤보 박스의 각 항목에 메모리 주소를 매핑합니다.
+4.  **갱신:** 저장 후 `SetCurSel`을 호출하여 콤보 박스 선택 상태를 갱신합니다.
 
 ### 2. 상태 복원 (Load)
 1.  **조회:** `CComboBox::GetItemDataPtr`를 통해 현재 선택된 항목에 매핑된 `DIS*` 주소를 가져옵니다.
@@ -62,8 +63,6 @@ void CSots01Dlg::LoadDialogState()
         const bool checked = p_dis->HasFlag(static_cast<uint32_t>(m.flag));
         p_check->SetCheck(checked ? BST_CHECKED : BST_UNCHECKED);
     }
-    
-    // Note: Radio Button 상태 복원 로직은 데이터 저장 기능 구현 후 추가 예정
 }
 ```
 
@@ -88,8 +87,9 @@ if (checked_id == 0) {
 - `radio_state`를 컨트롤 ID로 변환한 뒤 `CheckRadioButton`으로 체크를 반영합니다.
 
 ```cpp
-const UINT id = CtrlIdFromRadio(p_dis->radio_state);
-CheckRadioButton(IDC_ENABLE_RADIO, IDC_HIDE_RADIO, id);
+const UINT ctrl_id = CtrlIdFromRadio(p_dis->radio_state);
+CheckRadioButton(IDC_ENABLE_RADIO, IDC_HIDE_RADIO, ctrl_id);
+OnSetCheck(ctrl_id);
 ```
 
 > 라디오 선택에 따라 다른 컨트롤 Enable/Hide 같은 부수효과가 있다면, 복원 직후 관련 함수(예: `OnSetCheck(id)`)를 함께 호출하여 UI 정책을 동기화합니다.

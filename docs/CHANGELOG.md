@@ -9,6 +9,7 @@
 ### Fixed
 - **Critical:** 프로그램 종료 시 `CComboBox` Item Data에 할당된 메모리가 해제되지 않아 발생하던 `Detected memory leaks!` 현상 수정.
 - `OnDestroy` 핸들러에 `ClearComboData()` 호출 추가.
+- **UX:** 상태 저장(`Save`) 후 콤보박스의 선택 항목(CurSel)이 갱신되지 않던 문제 수정.
 
 ## [1.0.4] - 2026-01-07
 ### Added
