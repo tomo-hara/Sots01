@@ -23,5 +23,7 @@
     * 소멸: `delete p_data` (Delete 버튼 클릭, 초기화, 또는 종료 시)
     * **주의:** `DeleteString` 호출 전 반드시 메모리를 먼저 해제해야 함을 보장.
 
-### 수정 (Fix)
+### 해결 (Fix)
 * `DIS*` 동적 할당 후 해제 누락으로 발생하던 `Detected memory leaks!` 문제를 해제 루틴 보강으로 해결.
+* **UI Refresh:** 저장(`Save`) 버튼 클릭 직후, 콤보 박스의 선택 항목(Selection)이 입력한 텍스트나 갱신된 항목을 따라가지 못하던 문제를 수정.
+    * `AddString` 또는 `FindStringExact` 후 `SetCurSel`을 즉시 호출하여 선택 상태 동기화.

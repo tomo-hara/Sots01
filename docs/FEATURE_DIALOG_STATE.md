@@ -101,6 +101,7 @@ OnSetCheck(ctrl_id);
 - `FindStringExact()` 결과가 `CB_ERR`이면 목록에 없는 문자열이므로 `AddString()`으로 **새 아이템을 추가**합니다.
 - 새 아이템에는 `new DIS`로 상태 구조체를 할당한 뒤 `SetItemDataPtr()`로 연결합니다.
 - 기존 아이템이라도 `GetItemDataPtr()`가 `nullptr`이면 `DIS*`를 새로 할당해 연결합니다.
+- [Fix] 작업 완료 후 SetCurSel(index)를 호출하여 UI 상에서 해당 항목이 즉시 선택되도록 처리합니다.
 
 ---
 
